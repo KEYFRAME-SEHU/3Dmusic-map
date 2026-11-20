@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3Dmusic-map</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f4f1; color: #111; }
+  header { padding: 24px 32px 0; }
+  h1 { margin: 0 0 8px; font-size: 28px; }
+  p { margin: 0 0 16px; max-width: 70ch; line-height: 1.5; }
+  .map { width: 100%; max-width: 1920px; display: block; }
+  .key { padding: 0 32px 32px; columns: 2; max-width: 900px; }
+  .key ol { margin: 0; padding-left: 24px; }
+  .key li { margin-bottom: 6px; }
+  footer { padding: 0 32px 32px; color: #555; font-size: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>3Dmusic-map</h1>
+  <p>Every recorded song is one point in a 3D landscape you fly through and listen to. Songs move daily and leave glowing trails. X is chronology (days from July 6, 1974). Y is tempo (BPM, origin 120). Z is popularity, mainstream to underground, era-normalized; Z=0 is about 40,000 streams a year.</p>
+  <p>The guess is the unit of the map. Each track is placed in a cascade, one axis at a time: chronology, then tempo, then culture. Every day the map recomputes, and the trails are the record of it learning.</p>
+</header>
+<img class="map" src="music-map-20-tracks.png" alt="The Music Map with 20 tracks placed">
+<div class="key">
+  <ol id="track-key"></ol>
+</div>
+<footer>Snapshot <span id="snapshot-date"></span>. Hand-trained, curator-checked. Built with MusicBrainz, Spotify, and YouTube. No paid APIs.</footer>
+<script>
+fetch('data/snapshot-2026-11-20.json')
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('snapshot-date').textContent = d.snapshot_date;
+    const ol = document.getElementById('track-key');
+    d.tracks.forEach(t => {
+      const li = document.createElement('li');
+      li.textContent = t.artist + ', ' + t.title + ' (' + t.date.slice(0,4) + ', ' + t.bpm + ' BPM, ' + t.popularity + ')';
+      ol.appendChild(li);
+    });
+  });
+</script>
+</body>
+</html>
