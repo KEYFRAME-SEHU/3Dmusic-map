@@ -324,26 +324,46 @@ function normDate(d){
   if(d.length === 7) return d + '-01';
   return d;
 }
+function normName(s){
+  // Punctuation-insensitive key: 'Run-D.M.C.' and 'run dmc' both become 'rundmc'.
+  return (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
 function daysFromOrigin(dateIso){
   const [y, m, d] = dateIso.split('-').map(Number);
   const origin = new Date(1974, 6, 6);
   const dt = new Date(y, m - 1, d);
   return Math.round((dt - origin) / 86400000);
 }
+async function mbSearch(query, limit){
+  const r = await fetch('https://musicbrainz.org/ws/2/recording/?query=' + encodeURIComponent(query) + '&fmt=json&limit=' + limit);
+  const data = await r.json();
+  return data.recordings || [];
+}
+function bestDated(recs, artist, title){
+  let best = null, mbid = null;
+  for(const rec of recs){
+    const ac = (rec['artist-credit'] && rec['artist-credit'][0] && rec['artist-credit'][0].artist && rec['artist-credit'][0].artist.name) || '';
+    if(normName(ac) !== normName(artist)) continue;
+    if(normName(rec.title) !== normName(title)) continue;
+    const d = normDate(rec['first-release-date']);
+    if(d && (!best || d < best)){ best = d; mbid = rec.id; }
+  }
+  return { date: best, mbid };
+}
 async function browserCascade(artist, title){
   // 1. Chronology: MusicBrainz earliest release date.
+  // Try the fielded search first, then fall back to a title-only search
+  // filtered in the browser (artist names with punctuation, e.g. Run-D.M.C.,
+  // defeat the exact-phrase query).
   let dateIso = null, mbid = null, chronoConf = 'low (no date found; placed at today as a flagged guess)';
   try {
-    const q = 'artist:"' + artist + '" AND recording:"' + title + '"';
-    const r = await fetch('https://musicbrainz.org/ws/2/recording/?query=' + encodeURIComponent(q) + '&fmt=json&limit=10');
-    const data = await r.json();
-    const recs = data.recordings || [];
-    let best = null;
-    for(const rec of recs){
-      const d = normDate(rec['first-release-date']);
-      if(d && (!best || d < best)){ best = d; mbid = rec.id; }
+    let recs = await mbSearch('artist:"' + artist + '" AND recording:"' + title + '"', 10);
+    let found = bestDated(recs, artist, title);
+    if(!found.date){
+      recs = await mbSearch('recording:"' + title + '"', 25);
+      found = bestDated(recs, artist, title);
     }
-    if(best){ dateIso = best; chronoConf = 'medium (MusicBrainz earliest release)'; }
+    if(found.date){ dateIso = found.date; mbid = found.mbid; chronoConf = 'medium (MusicBrainz earliest release)'; }
   } catch(e) {}
   if(!dateIso){
     dateIso = new Date().toISOString().slice(0, 10);

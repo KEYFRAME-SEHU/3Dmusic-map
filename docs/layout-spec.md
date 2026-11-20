@@ -59,3 +59,17 @@ Set 2 (11-20), screen: 11. Kraftwerk, The Model, 1978, 124 BPM, ~6M/yr, (1208,42
 Curator verdict (Nov 20): 9 of 10 pass as-is in set 1; arithmetic spot-check clean (all day offsets, X pixels, Y interpolations, Z positions verified). One material correction: track 9 (Mike Love, Babylon Control). The popularity agent missed the track's viral YouTube video (Ineffable Music Group, 13M views, ~2M/yr). Corrected from ~10,000 streams/yr (deep underground) to ~1-2M/yr, Z from (906,694) to (1100,500), screen from (1433,1010) to (1626,816), a ~200 px move to mainstream of the origin. Date corrected to May 27, 2011 (x 1485.5, negligible). BPM 59 stands as a flagged guess, corroborated by a second reading, confidence raised to medium-low. Overall: conditional pass, train-ready once track 9 was fixed (it was). Honest unknowns correctly flagged: Dreamverse BPM (100, artist to confirm), Snake Oil BPM (153 vs 103, genuine 3:2 ambiguity), La Boheme rubato (115 mid-range).
 
 Layout fix (Nov 20): the "40,000 streams" Z label moved from (1030,608) to (1060,560) in both graphs, so dots 4 and 16 clear it. The "200 streams" label stays at (775,895); the graph-2 key box was shrunk to end at x=740 so it does not cover it.
+
+## Z revision: cultural prominence (Nov 20, 2026)
+
+Z is no longer streams alone. It is estimated cultural prominence, informed by commercial reach, cultural influence, and current relevance (Julian, Nov 20). The composite is Prominence = 0.40 x Commercial + 0.30 x Influence + 0.30 x Relevance, each component 0-1.
+
+- Commercial: Wikipedia peak chart position (bounded 1-100, the most era-robust number) plus certification level.
+- Influence: Rolling Stone 500 Greatest Songs rank (MusicBrainz series, cached; matched by recording MBID, falling back to normalized artist+title because the resolver's MBID is often a different release of the same song).
+- Relevance: Wikipedia pageviews (trailing 12 months, human only) plus YouTube views per year.
+
+The composite maps back to an equivalent streams/yr on the existing log scale so the viewer and the 2D baseline keep working unchanged: Z=0 stays at ~40,000 streams/yr (Prominence ~0.5). A 1984 landmark can sit mainstream of the origin even with modest current streams, because its chart peak and influence count.
+
+Spotify is no longer used. Spotify removed the audio-features endpoints for Development Mode apps (Nov 27, 2024) and the popularity field (Feb/Mar 2026); Extended Quota is granted only to registered businesses with 250,000+ monthly users. Tempo now comes from AcousticBrainz, reach from YouTube, no Spotify secrets needed.
+
+Daily rule change (Nov 20): the daily recompute re-runs ONLY the culture axis. Date and BPM are stable facts that do not change day to day, and the hand-trained seed values are curator-checked, so they are never overwritten by the resolvers. Only the prominence moves daily.

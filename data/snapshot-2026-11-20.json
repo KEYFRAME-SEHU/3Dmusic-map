@@ -13,422 +13,520 @@
     {
       "artist": "Donna Summer",
       "bpm": 126,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.75 (commercial 0.67, influence 0.90, relevance 0.72; chart peak #6 (US Billboard Hot 100); RS500 #52; ~9701 Wikipedia views/mo)",
       "date": "1977-07-02",
       "day_offset": 1092,
       "n": 1,
-      "popularity": "~15M streams/yr, 1977 worldwide #1",
+      "popularity": "~1,290,243 streams/yr equivalent (cultural prominence 0.75; chart peak #6 (US Billboard Hot 100); RS500 #52; ~9701 Wikipedia views/mo)",
       "screen": [
-        1232,
-        383
+        868.2,
+        746.4
       ],
       "title": "I Feel Love",
       "x_px": 1002.6,
       "y_px": 612,
       "z": [
-        1189,
-        411
+        825.6,
+        774.4
       ],
-      "streams_per_year": 15000000
+      "streams_per_year": 1290243,
+      "commercial": 0.665,
+      "influence": 0.898,
+      "relevance": 0.721,
+      "prominence": 0.752,
+      "mbid": "bc43f3eb-10af-4983-81c7-69fc67ef846a"
     },
     {
       "artist": "Bee Gees",
       "bpm": 104,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.77 (commercial 0.70, influence 0.80, relevance 0.84; chart peak #1 (Europe (Eurochart Hot 100)); RS500 #99; ~13289 Wikipedia views/mo)",
       "date": "1977-12-13",
       "day_offset": 1256,
       "n": 2,
-      "popularity": "~290M streams/yr, 1977/78 worldwide #1",
+      "popularity": "~1,760,882 streams/yr equivalent (cultural prominence 0.77; chart peak #1 (Europe (Eurochart Hot 100)); RS500 #99; ~13289 Wikipedia views/mo)",
       "screen": [
-        1353,
-        380
+        862.5,
+        870.5
       ],
       "title": "Stayin' Alive",
       "x_px": 1009.0,
       "y_px": 724,
       "z": [
-        1304,
-        296
+        813.5,
+        786.5
       ],
-      "streams_per_year": 290000000
+      "streams_per_year": 1760882,
+      "commercial": 0.7,
+      "influence": 0.804,
+      "relevance": 0.844,
+      "prominence": 0.774,
+      "mbid": "46db8571-a7f8-4798-989c-65478e51f553"
     },
     {
       "artist": "ManyNames",
       "bpm": 100,
-      "confidence": "low (BPM is a guess, no published BPM; artist to confirm)",
+      "confidence": "chrono: chrono: chrono: low (BPM is a guess, no published BPM; tempo: hand-trained; culture: prominence 0.07 (commercial 0.00, influence 0.00, relevance 0.23; no chart/canon/pageview signal found)",
       "date": "2023-07-13",
       "day_offset": 17904,
       "n": 3,
-      "popularity": "~5K streams/yr, niche psychill",
+      "popularity": "~103 streams/yr equivalent (cultural prominence 0.07; no chart/canon/pageview signal found)",
       "screen": [
-        1578,
-        825
+        1889.0,
+        514.3
       ],
       "title": "Dreamverse",
       "x_px": 1658.3,
       "y_px": 745,
       "z": [
-        880,
-        720
+        1190.7,
+        409.3
       ],
-      "streams_per_year": 5000
+      "streams_per_year": 103,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.231,
+      "prominence": 0.069
     },
     {
       "artist": "Joey Beltram",
       "bpm": 123,
-      "confidence": "medium (year only, mid-year convention)",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.09 (commercial 0.00, influence 0.00, relevance 0.29; no chart/canon/pageview signal found)",
       "date": "1990-07-01",
       "day_offset": 5839,
       "n": 4,
-      "popularity": "~100K streams/yr, 1990 techno classic",
+      "popularity": "~132 streams/yr equivalent (cultural prominence 0.09; no chart/canon/pageview signal found)",
       "screen": [
-        1223,
-        591
+        1408.8,
+        404.9
       ],
       "title": "Energy Flash",
       "x_px": 1187.7,
       "y_px": 626,
       "z": [
-        995,
-        605
+        1181.1,
+        418.9
       ],
-      "streams_per_year": 100000
+      "streams_per_year": 132,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.29,
+      "prominence": 0.087,
+      "mbid": "ca968927-72f0-43e5-9961-be0332d8ff60"
     },
     {
       "artist": "Bob Marley",
       "bpm": 74,
-      "confidence": "high (74 BPM is the half-time feel; double-time 148)",
+      "confidence": "chrono: chrono: chrono: high (74 BPM is the half-time feel; tempo: hand-trained; culture: prominence 0.51 (commercial 0.69, influence 0.00, relevance 0.79; chart peak #3 (Spain (AFYVE)); ~5599 Wikipedia views/mo)",
       "date": "1977-06-03",
       "day_offset": 1063,
       "n": 5,
-      "popularity": "~153M streams/yr, first Marley song to 1B Spotify",
+      "popularity": "~46,743 streams/yr equivalent (cultural prominence 0.51; chart peak #3 (Spain (AFYVE)); ~5599 Wikipedia views/mo)",
       "screen": [
-        1320,
-        562
+        995.5,
+        886.0
       ],
       "title": "Three Little Birds",
       "x_px": 1001.5,
       "y_px": 880,
       "z": [
-        1278,
-        322
+        954.0,
+        646.0
       ],
-      "streams_per_year": 153000000
+      "streams_per_year": 46743,
+      "commercial": 0.686,
+      "influence": 0.0,
+      "relevance": 0.791,
+      "prominence": 0.512,
+      "mbid": "dd6cb5a7-0d47-47ab-972f-c4d3df859fbf"
     },
     {
       "artist": "Charles Aznavour",
       "bpm": 115,
-      "confidence": "low-medium (rubato, sources range 106-122)",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.32 (commercial 0.28, influence 0.00, relevance 0.70; chart peak #61 (Wikipedia prose); ~1390 Wikipedia views/mo)",
       "date": "1965-07-01",
       "day_offset": -3292,
       "n": 6,
-      "popularity": "~30M streams/yr, 1965 international hit",
+      "popularity": "~3,444 streams/yr equivalent (cultural prominence 0.32; chart peak #61 (Wikipedia prose); ~1390 Wikipedia views/mo)",
       "screen": [
-        1088,
-        410
+        926.5,
+        571.1
       ],
       "title": "La Boheme",
       "x_px": 831.6,
       "y_px": 666,
       "z": [
-        1216,
-        384
+        1054.9,
+        545.1
       ],
-      "streams_per_year": 30000000
+      "streams_per_year": 3444,
+      "commercial": 0.28,
+      "influence": 0.0,
+      "relevance": 0.703,
+      "prominence": 0.323,
+      "mbid": "8ba3d268-5747-43da-a082-d8a6c014c62c"
     },
     {
       "artist": "Newcleus",
       "bpm": 116,
-      "confidence": "medium-high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.34 (commercial 0.37, influence 0.00, relevance 0.64; chart peak #48 (US Billboard Hot 100); ~4063 Wikipedia views/mo)",
       "date": "1984-03-15",
       "day_offset": 3540,
       "n": 7,
-      "popularity": "~35K streams/yr, essentially at the origin",
+      "popularity": "~4,460 streams/yr equivalent (cultural prominence 0.34; chart peak #48 (US Billboard Hot 100); ~4063 Wikipedia views/mo)",
       "screen": [
-        1093,
-        666
+        1183.0,
+        576.1
       ],
       "title": "Jam On It",
       "x_px": 1098.1,
       "y_px": 661,
       "z": [
-        955,
-        645
+        1044.9,
+        555.1
       ],
-      "streams_per_year": 35000
+      "streams_per_year": 4460,
+      "commercial": 0.371,
+      "influence": 0.0,
+      "relevance": 0.644,
+      "prominence": 0.342,
+      "mbid": "e5b71672-0a0a-498f-9cd9-042dd2203e47"
     },
     {
       "artist": "Sade",
       "bpm": 119,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.52 (commercial 0.67, influence 0.00, relevance 0.82; chart peak #5 (US Billboard Hot 100); ~11881 Wikipedia views/mo)",
       "date": "1984-07-16",
       "day_offset": 3663,
       "n": 8,
-      "popularity": "~250M streams/yr, 1984/85 hit",
+      "popularity": "~49,468 streams/yr equivalent (cultural prominence 0.52; chart peak #5 (US Billboard Hot 100); ~11881 Wikipedia views/mo)",
       "screen": [
-        1441,
-        307
+        1094.7,
+        653.2
       ],
       "title": "Smooth Operator",
       "x_px": 1102.9,
       "y_px": 645,
       "z": [
-        1298,
-        302
+        951.8,
+        648.2
       ],
-      "streams_per_year": 250000000
+      "streams_per_year": 49468,
+      "commercial": 0.672,
+      "influence": 0.0,
+      "relevance": 0.823,
+      "prominence": 0.516,
+      "mbid": "a2241285-64e4-4101-9efb-0c602cb8b4e4"
     },
     {
       "artist": "Mike Love",
       "bpm": 59,
-      "confidence": "medium-low (BPM is a flagged guess; date corrected by curator from Jul 1 to May 27, 2011)",
+      "confidence": "chrono: chrono: chrono: medium-low (BPM is a flagged guess; tempo: hand-trained; culture: prominence 0.13 (commercial 0.00, influence 0.00, relevance 0.42; no chart/canon/pageview signal found)",
       "date": "2011-05-27",
       "day_offset": 13474,
       "n": 9,
-      "popularity": "~1-2M streams/yr (curator-corrected; 13M-view YouTube video)",
+      "popularity": "~231 streams/yr equivalent (cultural prominence 0.13; no chart/canon/pageview signal found)",
       "screen": [
-        1626,
-        816
+        1685.0,
+        756.5
       ],
       "title": "Babylon Control",
       "x_px": 1485.5,
       "y_px": 956,
       "z": [
-        1100,
-        500
+        1159.5,
+        440.5
       ],
-      "streams_per_year": 1500000
+      "streams_per_year": 231,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.425,
+      "prominence": 0.127
     },
     {
       "artist": "Glass Beams",
       "bpm": 153,
-      "confidence": "medium (BPM conflict: SongBPM 153 vs Beatport 103)",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.20 (commercial 0.00, influence 0.00, relevance 0.65; ~1270 Wikipedia views/mo)",
       "date": "2024-03-22",
       "day_offset": 18157,
       "n": 10,
-      "popularity": "~3M streams/yr, 2024 psych-funk",
+      "popularity": "~587 streams/yr equivalent (cultural prominence 0.20; ~1270 Wikipedia views/mo)",
       "screen": [
-        1835,
-        344
+        1831.5,
+        347.6
       ],
       "title": "Snake Oil",
       "x_px": 1668.1,
       "y_px": 511,
       "z": [
-        1127,
-        473
+        1123.4,
+        476.6
       ],
-      "streams_per_year": 3000000
+      "streams_per_year": 587,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.649,
+      "prominence": 0.195,
+      "mbid": "aac83b75-204d-4075-a94a-79f0d8ccc79e"
     },
     {
       "artist": "Kraftwerk",
       "bpm": 124,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.47 (commercial 0.70, influence 0.00, relevance 0.63; chart peak #1 (UK Singles (OCC)); ~1555 Wikipedia views/mo)",
       "date": "1978-04-28",
       "day_offset": 1392,
       "n": 11,
-      "popularity": "~6M streams/yr, 1978 album track, UK #1 on 1982 re-release",
+      "popularity": "~25,702 streams/yr equivalent (cultural prominence 0.47; chart peak #1 (UK Singles (OCC)); ~1555 Wikipedia views/mo)",
       "screen": [
-        1208,
-        427
+        1031.4,
+        603.9
       ],
       "title": "The Model",
       "x_px": 1014.3,
       "y_px": 621,
       "z": [
-        1154,
-        446
+        977.1,
+        622.9
       ],
-      "streams_per_year": 6000000
+      "streams_per_year": 25702,
+      "commercial": 0.7,
+      "influence": 0.0,
+      "relevance": 0.628,
+      "prominence": 0.468,
+      "mbid": "6b346faa-e8eb-4c4f-927f-37684bebe651"
     },
     {
       "artist": "Nina Simone",
       "bpm": 147,
-      "confidence": "medium-high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.26 (commercial 0.15, influence 0.00, relevance 0.67; ~4436 Wikipedia views/mo)",
       "date": "1965-05-20",
       "day_offset": -3334,
       "n": 12,
-      "popularity": "~40M streams/yr across versions",
+      "popularity": "~1,447 streams/yr equivalent (cultural prominence 0.26; ~4436 Wikipedia views/mo)",
       "screen": [
-        1097,
-        260
+        958.5,
+        398.5
       ],
       "title": "Sinnerman",
       "x_px": 830.0,
       "y_px": 527,
       "z": [
-        1227,
-        373
+        1088.5,
+        511.5
       ],
-      "streams_per_year": 40000000
+      "streams_per_year": 1447,
+      "commercial": 0.15,
+      "influence": 0.0,
+      "relevance": 0.667,
+      "prominence": 0.26,
+      "mbid": "bc0e9d24-8b23-41ca-a389-3196e071c56e"
     },
     {
       "artist": "Giorgio Moroder",
       "bpm": 126,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.38 (commercial 0.48, influence 0.00, relevance 0.62; chart peak #33 (US Billboard Hot 100); ~1379 Wikipedia views/mo)",
       "date": "1978-10-06",
       "day_offset": 1553,
       "n": 13,
-      "popularity": "~3M streams/yr, 1978 Midnight Express theme",
+      "popularity": "~7,373 streams/yr equivalent (cultural prominence 0.38; chart peak #33 (US Billboard Hot 100); ~1379 Wikipedia views/mo)",
       "screen": [
-        1188,
-        445
+        1086.0,
+        546.6
       ],
       "title": "Chase",
       "x_px": 1020.6,
       "y_px": 612,
       "z": [
-        1127,
-        473
+        1025.4,
+        574.6
       ],
-      "streams_per_year": 3000000
+      "streams_per_year": 7373,
+      "commercial": 0.476,
+      "influence": 0.0,
+      "relevance": 0.625,
+      "prominence": 0.378,
+      "mbid": "cccea494-2c83-41fd-aa8f-cb2b5c8600dc"
     },
     {
       "artist": "Massive Attack",
       "bpm": 114,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.44 (commercial 0.53, influence 0.00, relevance 0.77; chart peak #25 (Europe (Eurochart Hot 100)); ~5172 Wikipedia views/mo)",
       "date": "1991-02-11",
       "day_offset": 6064,
       "n": 14,
-      "popularity": "~28M streams/yr, 1991 UK #13",
+      "popularity": "~18,344 streams/yr equivalent (cultural prominence 0.44; chart peak #25 (Europe (Eurochart Hot 100)); ~5172 Wikipedia views/mo)",
       "screen": [
-        1450,
-        417
+        1226.7,
+        640.8
       ],
       "title": "Unfinished Sympathy",
       "x_px": 1196.5,
       "y_px": 671,
       "z": [
-        1214,
-        386
+        990.2,
+        609.8
       ],
-      "streams_per_year": 28000000
+      "streams_per_year": 18344,
+      "commercial": 0.532,
+      "influence": 0.0,
+      "relevance": 0.77,
+      "prominence": 0.444,
+      "mbid": "6be70fbb-8fe2-49a5-aeda-87717a1a8e41"
     },
     {
       "artist": "Depeche Mode",
       "bpm": 113,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.58 (commercial 0.69, influence 0.17, relevance 0.84; chart peak #2 (Europe (Eurochart Hot 100)); RS500 #415; ~10854 Wikipedia views/mo)",
       "date": "1990-02-05",
       "day_offset": 5693,
       "n": 15,
-      "popularity": "~360M streams/yr, 1990 UK #6, US #8",
+      "popularity": "~119,715 streams/yr equivalent (cultural prominence 0.58; chart peak #2 (Europe (Eurochart Hot 100)); RS500 #415; ~10854 Wikipedia views/mo)",
       "screen": [
-        1534,
-        325
+        1139.6,
+        719.4
       ],
       "title": "Enjoy the Silence",
       "x_px": 1182.0,
       "y_px": 677,
       "z": [
-        1312,
-        288
+        917.6,
+        682.4
       ],
-      "streams_per_year": 360000000
+      "streams_per_year": 119715,
+      "commercial": 0.693,
+      "influence": 0.172,
+      "relevance": 0.836,
+      "prominence": 0.58,
+      "mbid": "95a37afb-f01d-43e5-8c2b-592965e2b59b"
     },
     {
       "artist": "Fela Kuti",
       "bpm": 93,
-      "confidence": "medium-low",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.08 (commercial 0.00, influence 0.00, relevance 0.27; no chart/canon/pageview signal found)",
       "date": "1975-12-12",
       "day_offset": 524,
       "n": 16,
-      "popularity": "~4M streams/yr, 1975 Afrobeat classic",
+      "popularity": "~122 streams/yr equivalent (cultural prominence 0.08; no chart/canon/pageview signal found)",
       "screen": [
-        1158,
-        603
+        1204.6,
+        556.8
       ],
       "title": "Water No Get Enemy",
       "x_px": 980.4,
       "y_px": 781,
       "z": [
-        1138,
-        462
+        1184.2,
+        415.8
       ],
-      "streams_per_year": 4000000
+      "streams_per_year": 122,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.272,
+      "prominence": 0.081,
+      "mbid": "21a4ec40-28be-496b-be56-f4d9cd7cf93a"
     },
     {
       "artist": "New Order",
       "bpm": 130,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.66 (commercial 0.67, influence 0.53, relevance 0.76; chart peak #6 (Europe (Eurochart Hot 100)); RS500 #235; ~17977 Wikipedia views/mo)",
       "date": "1983-03-07",
       "day_offset": 3166,
       "n": 17,
-      "popularity": "~25M streams/yr, best-selling 12-inch single of all time",
+      "popularity": "~337,039 streams/yr equivalent (cultural prominence 0.66; chart peak #6 (Europe (Eurochart Hot 100)); RS500 #235; ~17977 Wikipedia views/mo)",
       "screen": [
-        1332,
-        344
+        1001.0,
+        675.5
       ],
       "title": "Blue Monday",
       "x_px": 1083.5,
       "y_px": 593,
       "z": [
-        1209,
-        391
+        877.5,
+        722.5
       ],
-      "streams_per_year": 25000000
+      "streams_per_year": 337039,
+      "commercial": 0.665,
+      "influence": 0.532,
+      "relevance": 0.763,
+      "prominence": 0.655,
+      "mbid": "6cfc7f12-00d7-4b01-a3f3-513372243aaa"
     },
     {
       "artist": "Erykah Badu",
       "bpm": 80,
-      "confidence": "high",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.46 (commercial 0.62, influence 0.00, relevance 0.72; chart peak #12 (US Billboard Hot 100); ~1234 Wikipedia views/mo)",
       "date": "1996-12-10",
       "day_offset": 8193,
       "n": 18,
-      "popularity": "~38M streams/yr, 1997 debut, US #12",
+      "popularity": "~24,321 streams/yr equivalent (cultural prominence 0.46; chart peak #12 (US Billboard Hot 100); ~1234 Wikipedia views/mo)",
       "screen": [
-        1544,
-        584
+        1298.8,
+        829.7
       ],
       "title": "On & On",
       "x_px": 1279.5,
       "y_px": 849,
       "z": [
-        1225,
-        375
+        979.3,
+        620.7
       ],
-      "streams_per_year": 38000000
+      "streams_per_year": 24321,
+      "commercial": 0.623,
+      "influence": 0.0,
+      "relevance": 0.717,
+      "prominence": 0.464,
+      "mbid": "c03b005d-5570-45e7-915f-9a7e26c4e929"
     },
     {
       "artist": "Underworld",
       "bpm": 140,
-      "confidence": "medium-low",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.49 (commercial 0.66, influence 0.00, relevance 0.76; chart peak #7 (Europe (Eurochart Hot 100)); ~12158 Wikipedia views/mo)",
       "date": "1995-05-01",
       "day_offset": 7604,
       "n": 19,
-      "popularity": "~15M streams/yr, 1995/96 Trainspotting, UK #2",
+      "popularity": "~35,017 streams/yr equivalent (cultural prominence 0.49; chart peak #7 (Europe (Eurochart Hot 100)); ~12158 Wikipedia views/mo)",
       "screen": [
-        1486,
-        317
+        1261.7,
+        540.9
       ],
       "title": "Born Slippy .NUXX",
       "x_px": 1256.6,
       "y_px": 546,
       "z": [
-        1189,
-        411
+        965.1,
+        634.9
       ],
-      "streams_per_year": 15000000
+      "streams_per_year": 35017,
+      "commercial": 0.658,
+      "influence": 0.0,
+      "relevance": 0.758,
+      "prominence": 0.491,
+      "mbid": "c76c5f42-db47-4614-b9d9-9b0025ccda0a"
     },
     {
       "artist": "Air",
       "bpm": 80,
-      "confidence": "low",
+      "confidence": "chrono: chrono: chrono: hand-trained; tempo: hand-trained; culture: prominence 0.11 (commercial 0.00, influence 0.00, relevance 0.38; no chart/canon/pageview signal found)",
       "date": "1998-01-16",
       "day_offset": 8595,
       "n": 20,
-      "popularity": "~5M streams/yr, 1998 Moon Safari opener",
+      "popularity": "~191 streams/yr equivalent (cultural prominence 0.11; no chart/canon/pageview signal found)",
       "screen": [
-        1482,
-        662
+        1502.0,
+        642.2
       ],
       "title": "La Femme d'Argent",
       "x_px": 1295.2,
       "y_px": 849,
       "z": [
-        1147,
-        453
+        1166.8,
+        433.2
       ],
-      "streams_per_year": 5000000
+      "streams_per_year": 191,
+      "commercial": 0.0,
+      "influence": 0.0,
+      "relevance": 0.379,
+      "prominence": 0.114,
+      "mbid": "864c7424-c9ab-481e-a9c0-ad986e646c67"
     }
   ]
 }

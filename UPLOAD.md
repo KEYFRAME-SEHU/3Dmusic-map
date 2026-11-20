@@ -13,8 +13,8 @@ The files:
 - `docs/layout-spec.md` (the full layout spec)
 - `music-map-10-tracks.svg` and `music-map-10-tracks.png` (graph 1)
 - `music-map-20-tracks.svg` and `music-map-20-tracks.png` (graph 2)
-- `resolvers/` (the three estimators + the cascade: `chronology.py`, `tempo.py`, `popularity.py`, `recompute.py`, `requirements.txt`)
-- `.github/workflows/daily.yml` (the daily recompute job) and `.github/workflows/add-track.yml` (runs the cascade when someone submits a track)
+- `resolvers/` (the estimators + the cascade: `chronology.py`, `tempo.py`, `popularity.py`, `prominence.py`, `recompute.py`, `requirements.txt`)
+- `.github/workflows/daily.yml` (the daily recompute job, 12:00 UTC; no secrets needed)
 
 ## Method 1: GitHub web UI (easiest, no command line)
 
@@ -50,6 +50,5 @@ The files:
 
 ## Next steps (for later, not now)
 
-- The daily workflow (`.github/workflows/daily.yml`) is a skeleton. It runs when the resolver scripts land.
-- The Spotify developer app credentials go in the repo as Secrets (`Settings`, then `Secrets and variables`, then `Actions`): `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`. Do not put them in any file.
-- YouTube needs no key for v1 (yt-dlp reads the public page).
+- The daily workflow (`.github/workflows/daily.yml`) runs at 12:00 UTC and re-runs every track through the resolvers. It needs no secrets and no API keys: MusicBrainz, AcousticBrainz, Wikipedia, and Wikimedia are all free, and YouTube is read from the public page (yt-dlp).
+- Spotify is no longer used. Spotify removed the audio-features endpoints and the `popularity` field for Development Mode apps, and Extended Quota is only granted to registered businesses with 250,000+ monthly users. The resolvers were rewired to free sources instead, so no Spotify secrets are needed. If you already set `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` as repo secrets, you can delete them.
