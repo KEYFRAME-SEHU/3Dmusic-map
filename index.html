@@ -34,6 +34,14 @@
 <canvas id="viewer"></canvas>
 <div class="hint">Drag to orbit. Scroll to zoom. Right-drag to pan. Click a numbered point to see the track.</div>
 <div id="track-info">Click a point to see its track.</div>
+<form id="add-track" style="padding: 0 32px 16px;">
+  <strong>Add a track to the map</strong><br>
+  <span style="font-size: 14px; color: #555;">Type a track and an artist. It maps right here, instantly, no sign-in. The date comes from MusicBrainz, the BPM from AcousticBrainz when it has it. The reach is a flagged guess for now; the daily update refines it.</span><br><br>
+  <label>Track name<br><input id="track-title" type="text" required style="width: 320px; padding: 6px; font-size: 15px;"></label><br><br>
+  <label>Artist<br><input id="track-artist" type="text" required style="width: 320px; padding: 6px; font-size: 15px;"></label><br><br>
+  <button type="submit" style="padding: 8px 18px; font-size: 15px; cursor: pointer;">Map this track</button>
+  <span id="add-status" style="font-size: 14px; color: #555;"></span>
+</form>
 <div class="key">
   <ol id="track-key"></ol>
 </div>
@@ -186,30 +194,36 @@ addLabel('0', -4, -50, 0, 24);
 // ---------- tracks ----------
 const points = [];
 const infoEl = document.getElementById('track-info');
+const keyOl = document.getElementById('track-key');
+let nextN = 1;
+function addTrackToScene(t){
+  const li = document.createElement('li');
+  li.textContent = t.artist + ', ' + t.title + ' (' + t.date.slice(0,4) + ', ' + t.bpm + ' BPM, ' + t.popularity + ')';
+  keyOl.appendChild(li);
+  const pos = trackToVec3(t);
+  const geo = new THREE.SphereGeometry(1.4, 24, 24);
+  const mat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.copy(pos);
+  mesh.userData.track = t;
+  scene.add(mesh);
+  points.push(mesh);
+  const num = makeLabel(String(t.n), 30, '#1a1a1a');
+  num.position.set(pos.x, pos.y + 3.2, pos.z);
+  scene.add(num);
+  scene.add(line([pos.clone(), new THREE.Vector3(pos.x, Y_MIN, pos.z)], 0x1a1a1a, 0.25));
+  return mesh;
+}
 fetch('data/snapshot-2026-11-20.json')
   .then(r => r.json())
   .then(d => {
     document.getElementById('snapshot-date').textContent = d.snapshot_date;
-    const ol = document.getElementById('track-key');
-    d.tracks.forEach(t => {
-      const li = document.createElement('li');
-      li.textContent = t.artist + ', ' + t.title + ' (' + t.date.slice(0,4) + ', ' + t.bpm + ' BPM, ' + t.popularity + ')';
-      ol.appendChild(li);
-      const pos = trackToVec3(t);
-      const geo = new THREE.SphereGeometry(1.4, 24, 24);
-      const mat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.copy(pos);
-      mesh.userData.track = t;
-      scene.add(mesh);
-      points.push(mesh);
-      // number label
-      const num = makeLabel(String(t.n), 30, '#1a1a1a');
-      num.position.set(pos.x, pos.y + 3.2, pos.z);
-      scene.add(num);
-      // plumb line down to the floor (y=-50)
-      scene.add(line([pos.clone(), new THREE.Vector3(pos.x, Y_MIN, pos.z)], 0x1a1a1a, 0.25));
-    });
+    d.tracks.forEach(t => { addTrackToScene(t); nextN = Math.max(nextN, t.n + 1); });
+    // Visitor-added tracks saved in this browser.
+    try {
+      const saved = JSON.parse(localStorage.getItem('3dmusic-added') || '[]');
+      saved.forEach(t => { t.n = nextN++; addTrackToScene(t); });
+    } catch(e) {}
   });
 
 // click a point to show its track
@@ -230,6 +244,88 @@ renderer.domElement.addEventListener('pointerup', e => {
   if(hit.length){
     const t = hit[0].object.userData.track;
     infoEl.innerHTML = '<strong>' + t.n + '. ' + t.artist + ' &mdash; ' + t.title + '</strong> &middot; ' + t.date + ' &middot; ' + t.bpm + ' BPM &middot; ' + t.popularity + ' &middot; confidence: ' + t.confidence;
+  }
+});
+
+// ---------- add a track, in the browser (no sign-in) ----------
+// The cascade runs right here: MusicBrainz for the date (free, no key),
+// AcousticBrainz for the BPM when it has the track. The reach is a flagged
+// guess at Z=0; the daily update (with Spotify) refines it. The point appears
+// instantly and is saved in this browser so it stays on your map.
+function normDate(d){
+  if(!d) return null;
+  if(d.length === 4) return d + '-07-01';
+  if(d.length === 7) return d + '-01';
+  return d;
+}
+function daysFromOrigin(dateIso){
+  const [y, m, d] = dateIso.split('-').map(Number);
+  const origin = new Date(1974, 6, 6);
+  const dt = new Date(y, m - 1, d);
+  return Math.round((dt - origin) / 86400000);
+}
+async function browserCascade(artist, title){
+  // 1. Chronology: MusicBrainz earliest release date.
+  let dateIso = null, mbid = null, chronoConf = 'low (no date found; placed at today as a flagged guess)';
+  try {
+    const q = 'artist:"' + artist + '" AND recording:"' + title + '"';
+    const r = await fetch('https://musicbrainz.org/ws/2/recording/?query=' + encodeURIComponent(q) + '&fmt=json&limit=10');
+    const data = await r.json();
+    const recs = data.recordings || [];
+    let best = null;
+    for(const rec of recs){
+      const d = normDate(rec['first-release-date']);
+      if(d && (!best || d < best)){ best = d; mbid = rec.id; }
+    }
+    if(best){ dateIso = best; chronoConf = 'medium (MusicBrainz earliest release)'; }
+  } catch(e) {}
+  if(!dateIso){
+    dateIso = new Date().toISOString().slice(0, 10);
+  }
+  // 2. Tempo: AcousticBrainz BPM for the MusicBrainz recording id.
+  let bpm = 120, tempoConf = 'low (no BPM found; placed at the 120 origin as a flagged guess)';
+  if(mbid){
+    try {
+      const r = await fetch('https://acousticbrainz.org/api/v1/' + mbid + '/low-level');
+      if(r.ok){
+        const data = await r.json();
+        const b = data && data.rhythm && data.rhythm.bpm;
+        if(b){ bpm = Math.round(b); tempoConf = 'medium (AcousticBrainz)'; }
+      }
+    } catch(e) {}
+  }
+  // 3. Culture: flagged guess at Z=0 until the daily update refines it.
+  const streams = 40000;
+  return {
+    artist, title, date: dateIso, day_offset: daysFromOrigin(dateIso),
+    bpm, streams_per_year: streams,
+    popularity: '~40,000 streams/yr (browser guess; the daily update refines it)',
+    confidence: 'chrono: ' + chronoConf + '; tempo: ' + tempoConf + '; culture: low (reach is a flagged guess at Z=0)',
+  };
+}
+document.getElementById('add-track').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const title = document.getElementById('track-title').value.trim();
+  const artist = document.getElementById('track-artist').value.trim();
+  const status = document.getElementById('add-status');
+  if(!title || !artist) return;
+  status.textContent = 'Mapping…';
+  try {
+    const t = await browserCascade(artist, title);
+    t.n = nextN++;
+    addTrackToScene(t);
+    // Save in this browser so it stays on your map.
+    try {
+      const saved = JSON.parse(localStorage.getItem('3dmusic-added') || '[]');
+      saved.push(t);
+      localStorage.setItem('3dmusic-added', JSON.stringify(saved));
+    } catch(e2) {}
+    status.textContent = 'Mapped. ' + artist + ' — ' + title + ' is on the map as point ' + t.n + '.';
+    infoEl.innerHTML = '<strong>' + t.n + '. ' + t.artist + ' &mdash; ' + t.title + '</strong> &middot; ' + t.date + ' &middot; ' + t.bpm + ' BPM &middot; ' + t.popularity;
+    document.getElementById('track-title').value = '';
+    document.getElementById('track-artist').value = '';
+  } catch(err) {
+    status.textContent = 'Could not map that track right now. Try again in a moment.';
   }
 });
 

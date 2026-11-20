@@ -8,12 +8,13 @@ Upload everything in this folder **except** the `.venv` folder (that is just the
 
 The files:
 - `README.md`
-- `index.html` (the GitHub Pages site)
+- `index.html` (the GitHub Pages site, now the 3D viewer with the add-a-track form)
 - `data/snapshot-2026-11-20.json` (the 20 tracks)
 - `docs/layout-spec.md` (the full layout spec)
 - `music-map-10-tracks.svg` and `music-map-10-tracks.png` (graph 1)
 - `music-map-20-tracks.svg` and `music-map-20-tracks.png` (graph 2)
-- `.github/workflows/daily.yml` (the daily recompute job, skeleton)
+- `resolvers/` (the three estimators + the cascade: `chronology.py`, `tempo.py`, `popularity.py`, `recompute.py`, `requirements.txt`)
+- `.github/workflows/daily.yml` (the daily recompute job) and `.github/workflows/add-track.yml` (runs the cascade when someone submits a track)
 
 ## Method 1: GitHub web UI (easiest, no command line)
 

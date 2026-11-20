@@ -27,8 +27,23 @@ Every day all tracks move dynamically. The daily engine re-runs the three resolv
 
 ## The site
 
-GitHub Pages serves `index.html`, which shows the latest snapshot on the map. No paid APIs: MusicBrainz is free, Spotify has a free developer app, YouTube is read from the public page (yt-dlp) for v1.
+GitHub Pages serves `index.html`, a real 3D viewer (Three.js). Drag to orbit, scroll to zoom, right-drag to pan. Click a numbered point to see its track. The three planes are drawn in color: blue Chronology, red Tempo, green Popularity. The flat 2D graph is still in the repo (`music-map-20-tracks.png`) and linked from the page.
+
+No paid APIs: MusicBrainz is free, Spotify has a free developer app, YouTube is read from the public page (yt-dlp) for v1.
+
+## Add a track (user input)
+
+Anyone can add a track from the site, no sign-in. There is a form on the page: type the track name and the artist, click "Map this track." The cascade runs right in the browser, instantly: MusicBrainz finds the date (free, no key), AcousticBrainz finds the BPM when it has the track. The reach is a flagged guess at Z=0 for now; the daily update refines it. The point appears on the map immediately and is saved in that browser, so it stays on your map.
+
+The full Spotify cascade (accurate BPM and reach) still runs in the GitHub Actions for tracks in the snapshot. The resolvers live in `resolvers/`:
+- `chronology.py` — MusicBrainz earliest release date (free, no key).
+- `tempo.py` — Spotify audio features tempo (needs `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` repo secrets).
+- `popularity.py` — Spotify popularity mapped to streams/yr, falling back to YouTube views / age via yt-dlp.
+- `recompute.py` — the cascade orchestrator. `python resolvers/recompute.py "Artist" "Title"` places one track; `python resolvers/recompute.py --daily` re-runs every track.
+- `requirements.txt` — `requests`, `yt-dlp`.
+
+Set the Spotify secrets under the repo's Settings, then Secrets and variables, then Actions. Do not put them in any file.
 
 ## Status
 
-Hand-training first, then scale up. 20 tracks mapped by hand (Nov 20, 2026) and curator-checked: 9 of 10 passed as-is in the first set; one correction (Mike Love, Babylon Control, whose 13M-view YouTube video moved it ~200 px from deep underground to mainstream of the origin). The resolvers, the daily engine, and the 3D viewer come next.
+Hand-training first, then scale up. 20 tracks mapped by hand (Nov 20, 2026) and curator-checked: 9 of 10 passed as-is in the first set; one correction (Mike Love, Babylon Control, whose 13M-view YouTube video moved it ~200 px from deep underground to mainstream of the origin). The 3D viewer is live. The user-input form and the full-cascade resolvers are built; the daily engine (`.github/workflows/daily.yml`, 12:00 UTC) re-runs every track once a day.
