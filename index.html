@@ -9,12 +9,21 @@
   header { padding: 24px 32px 0; }
   h1 { margin: 0 0 8px; font-size: 28px; }
   p { margin: 0 0 16px; max-width: 70ch; line-height: 1.5; }
-  .map { width: 100%; max-width: 1920px; display: block; }
-  .key { padding: 0 32px 32px; columns: 2; max-width: 900px; }
+  #viewer { width: 100%; height: 640px; display: block; cursor: grab; touch-action: none; }
+  #viewer:active { cursor: grabbing; }
+  .hint { padding: 8px 32px 0; color: #555; font-size: 14px; }
+  .key { padding: 16px 32px 32px; columns: 2; max-width: 900px; }
   .key ol { margin: 0; padding-left: 24px; }
   .key li { margin-bottom: 6px; }
+  #track-info { padding: 0 32px 16px; font-size: 15px; min-height: 24px; }
+  #track-info strong { font-size: 16px; }
   footer { padding: 0 32px 32px; color: #555; font-size: 14px; }
+  .links { padding: 0 32px 16px; font-size: 14px; }
+  .links a { color: #111; }
 </style>
+<script type="importmap">
+{"imports": {"three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
 </head>
 <body>
 <header>
@@ -22,12 +31,161 @@
   <p>Every recorded song is one point in a 3D landscape you fly through and listen to. Songs move daily and leave glowing trails. X is chronology (days from July 6, 1974). Y is tempo (BPM, origin 120). Z is popularity, mainstream to underground, era-normalized; Z=0 is about 40,000 streams a year.</p>
   <p>The guess is the unit of the map. Each track is placed in a cascade, one axis at a time: chronology, then tempo, then culture. Every day the map recomputes, and the trails are the record of it learning.</p>
 </header>
-<img class="map" src="music-map-20-tracks.png" alt="The Music Map with 20 tracks placed">
+<canvas id="viewer"></canvas>
+<div class="hint">Drag to orbit. Scroll to zoom. Right-drag to pan. Click a numbered point to see the track.</div>
+<div id="track-info">Click a point to see its track.</div>
 <div class="key">
   <ol id="track-key"></ol>
 </div>
+<div class="links"><a href="music-map-20-tracks.png">Flat 2D graph (20 tracks, PNG)</a> &middot; <a href="docs/layout-spec.md">Layout spec</a></div>
 <footer>Snapshot <span id="snapshot-date"></span>. Hand-trained, curator-checked. Built with MusicBrainz, Spotify, and YouTube. No paid APIs.</footer>
-<script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---------- coordinate mapping ----------
+// X: chronology. day_offset (days from Jul 6, 1974) * 0.005
+// Y: tempo. Band scale, origin 120 BPM at y=0, floor 0 BPM at y=-50, 1000 BPM at y=+50.
+// Z: popularity. z = (log10(40000) - log10(streams)) * 10. 40K streams -> 0. More streams -> negative (mainstream, front). Fewer -> positive (underground, deep).
+const X_SCALE = 0.005;
+const Z_MID_LOG = Math.log10(40000);
+const Z_SCALE = 10;
+const Y_SLOW = [[0,-50],[60,-100/3],[90,-50/3],[120,0]];
+const Y_FAST = [[120,0],[140,10],[175,20],[250,30],[500,40],[1000,50]];
+function bpmToY(bpm){
+  const table = bpm <= 120 ? Y_SLOW : Y_FAST;
+  for(let i=0;i<table.length-1;i++){
+    const [b0,y0]=table[i], [b1,y1]=table[i+1];
+    if(bpm>=b0 && bpm<=b1){
+      const f=(bpm-b0)/(b1-b0);
+      return y0 + f*(y1-y0);
+    }
+  }
+  return bpm < 0 ? -50 : 50;
+}
+function trackToVec3(t){
+  const x = t.day_offset * X_SCALE;
+  const y = bpmToY(t.bpm);
+  const z = (Z_MID_LOG - Math.log10(t.streams_per_year)) * Z_SCALE;
+  return new THREE.Vector3(x, y, z);
+}
+
+// ---------- scene ----------
+const canvas = document.getElementById('viewer');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf4f4f1);
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 2000);
+camera.position.set(120, 60, 140);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(35, 0, -10);
+controls.enableDamping = true;
+controls.update();
+
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ---------- helpers ----------
+function makeLabel(text, size=28, color='#111'){
+  const c = document.createElement('canvas');
+  const ctx = c.getContext('2d');
+  ctx.font = size + 'px system-ui, sans-serif';
+  const w = Math.ceil(ctx.measureText(text).width) + 16;
+  c.width = w; c.height = size + 16;
+  const ctx2 = c.getContext('2d');
+  ctx2.font = size + 'px system-ui, sans-serif';
+  ctx2.fillStyle = color;
+  ctx2.textBaseline = 'middle';
+  ctx2.fillText(text, 8, c.height/2);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+  const sp = new THREE.Sprite(mat);
+  const s = 0.055;
+  sp.scale.set(c.width*s, c.height*s, 1);
+  return sp;
+}
+function line(points, color, opacity=1){
+  const g = new THREE.BufferGeometry().setFromPoints(points);
+  const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+  return new THREE.Line(g, m);
+}
+function gridOnPlane(color, fixedAxis, fixedVal, aMin, aMax, bMin, bMax, step){
+  const pts = [];
+  for(let a=aMin; a<=aMax+0.001; a+=step){
+    const p1={}, p2={};
+    p1[fixedAxis]=fixedVal; p2[fixedAxis]=fixedVal;
+    if(fixedAxis==='z'){ p1.x=a; p1.y=bMin; p2.x=a; p2.y=bMax; }
+    else if(fixedAxis==='y'){ p1.x=a; p1.z=bMin; p2.x=a; p2.z=bMax; }
+    else { p1.y=a; p1.z=bMin; p2.y=a; p2.z=bMax; }
+    pts.push(new THREE.Vector3(p1.x||0, p1.y||0, p1.z||0), new THREE.Vector3(p2.x||0, p2.y||0, p2.z||0));
+  }
+  for(let b=bMin; b<=bMax+0.001; b+=step){
+    const p1={}, p2={};
+    p1[fixedAxis]=fixedVal; p2[fixedAxis]=fixedVal;
+    if(fixedAxis==='z'){ p1.x=aMin; p1.y=b; p2.x=aMax; p2.y=b; }
+    else if(fixedAxis==='y'){ p1.x=aMin; p1.z=b; p2.x=aMax; p2.z=b; }
+    else { p1.y=aMin; p1.z=b; p2.y=aMax; p2.z=b; }
+    pts.push(new THREE.Vector3(p1.x||0, p1.y||0, p1.z||0), new THREE.Vector3(p2.x||0, p2.y||0, p2.z||0));
+  }
+  const g = new THREE.BufferGeometry().setFromPoints(pts);
+  const m = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.28 });
+  return new THREE.LineSegments(g, m);
+}
+
+// ---------- axes and planes ----------
+// Extents: X -20..95, Y -50..50, Z -55..25. Floor is y=-50.
+const X_MIN=-20, X_MAX=95, Y_MIN=-50, Y_MAX=50, Z_MIN=-55, Z_MAX=25;
+// Planes: blue XY (Chronology x Tempo) at z=0; red YZ (Tempo x Popularity) at x=0; green XZ floor (Chronology x Popularity) at y=-50.
+scene.add(gridOnPlane(0x2a6fdb, 'z', 0, X_MIN, X_MAX, Y_MIN, Y_MAX, 10));
+scene.add(gridOnPlane(0xd43d2a, 'x', 0, Y_MIN, Y_MAX, Z_MIN, Z_MAX, 10));
+scene.add(gridOnPlane(0x2a9d4a, 'y', Y_MIN, X_MIN, X_MAX, Z_MIN, Z_MAX, 10));
+// Axes (thicker, dark)
+scene.add(line([new THREE.Vector3(X_MIN,0,0), new THREE.Vector3(X_MAX,0,0)], 0x111111, 0.9));
+scene.add(line([new THREE.Vector3(0,Y_MIN,0), new THREE.Vector3(0,Y_MAX,0)], 0x111111, 0.9));
+scene.add(line([new THREE.Vector3(0,0,Z_MIN), new THREE.Vector3(0,0,Z_MAX)], 0x111111, 0.9));
+// Floor edge (the y=0 line of the floor plane is the X axis; the floor's far edge at y=-50)
+scene.add(line([new THREE.Vector3(X_MIN,Y_MIN,0), new THREE.Vector3(X_MAX,Y_MIN,0)], 0x111111, 0.5));
+
+// ---------- axis labels ----------
+function addLabel(text, x, y, z, size=28){
+  const sp = makeLabel(text, size);
+  sp.position.set(x, y, z);
+  scene.add(sp);
+  return sp;
+}
+addLabel('Chronology (X)', 92, 4, 0);
+addLabel('today', 96, 3, -6, 24);
+addLabel('before 1974', -18, 3, 6, 24);
+addLabel('Tempo (BPM) (Y)', -14, 52, 0);
+addLabel('120 BPM (0,0,0)', 6, 4, -4, 24);
+addLabel('mainstream (Z)', 4, 4, -56, 24);
+addLabel('underground', -4, -46, 26, 24);
+addLabel('0', -4, -50, 0, 24);
+// Y ticks
+[[0,'0'],[60,'60'],[90,'90'],[140,'140'],[175,'175'],[250,'250'],[500,'500'],[1000,'1000']].forEach(([bpm,lab])=>{
+  addLabel(lab, -5, bpmToY(bpm), 0, 22);
+});
+// Z ticks
+[[200,'200 streams'],[40000,'40,000 streams'],[8500000,'8.5M streams']].forEach(([s,lab])=>{
+  const z = (Z_MID_LOG - Math.log10(s)) * Z_SCALE;
+  addLabel(lab, 4, 2, z, 22);
+});
+// X ticks (years)
+[[1947,-10000],[1988,5000],[2001,10000],[2015,15000]].forEach(([yr, d])=>{
+  addLabel(String(yr), d*X_SCALE, -4, 0, 22);
+});
+
+// ---------- tracks ----------
+const points = [];
+const infoEl = document.getElementById('track-info');
 fetch('data/snapshot-2026-11-20.json')
   .then(r => r.json())
   .then(d => {
@@ -37,8 +195,50 @@ fetch('data/snapshot-2026-11-20.json')
       const li = document.createElement('li');
       li.textContent = t.artist + ', ' + t.title + ' (' + t.date.slice(0,4) + ', ' + t.bpm + ' BPM, ' + t.popularity + ')';
       ol.appendChild(li);
+      const pos = trackToVec3(t);
+      const geo = new THREE.SphereGeometry(1.4, 24, 24);
+      const mat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.copy(pos);
+      mesh.userData.track = t;
+      scene.add(mesh);
+      points.push(mesh);
+      // number label
+      const num = makeLabel(String(t.n), 30, '#1a1a1a');
+      num.position.set(pos.x, pos.y + 3.2, pos.z);
+      scene.add(num);
+      // plumb line down to the floor (y=-50)
+      scene.add(line([pos.clone(), new THREE.Vector3(pos.x, Y_MIN, pos.z)], 0x1a1a1a, 0.25));
     });
   });
+
+// click a point to show its track
+const ray = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+let downAt = null;
+renderer.domElement.addEventListener('pointerdown', e => { downAt = [e.clientX, e.clientY]; });
+renderer.domElement.addEventListener('pointerup', e => {
+  if(!downAt) return;
+  const dx = e.clientX - downAt[0], dy = e.clientY - downAt[1];
+  downAt = null;
+  if(dx*dx + dy*dy > 25) return; // it was a drag, not a click
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+  ray.setFromCamera(mouse, camera);
+  const hit = ray.intersectObjects(points, false);
+  if(hit.length){
+    const t = hit[0].object.userData.track;
+    infoEl.innerHTML = '<strong>' + t.n + '. ' + t.artist + ' &mdash; ' + t.title + '</strong> &middot; ' + t.date + ' &middot; ' + t.bpm + ' BPM &middot; ' + t.popularity + ' &middot; confidence: ' + t.confidence;
+  }
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
 </script>
 </body>
 </html>
