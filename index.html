@@ -5,21 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3Dmusic-map</title>
 <style>
-  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f4f1; color: #111; }
-  header { padding: 24px 32px 0; }
-  h1 { margin: 0 0 8px; font-size: 28px; }
-  p { margin: 0 0 16px; max-width: 70ch; line-height: 1.5; }
-  #viewer { width: 100%; height: 640px; display: block; cursor: grab; touch-action: none; }
+  :root { --accent: #00a8cc; --ink: #111; --muted: #555; --line: #d8d8d2; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; margin: 0; background: #f4f4f1; color: var(--ink); }
+  header { padding: 28px 32px 0; }
+  .brand { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .brand svg { width: 44px; height: 44px; flex: none; }
+  h1 { margin: 0; font-size: 32px; letter-spacing: -0.5px; }
+  .tagline { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  header p { margin: 0 0 14px; line-height: 1.55; font-size: 16px; }
+  #viewer { width: 100%; height: 68vh; min-height: 480px; display: block; cursor: grab; touch-action: none; }
   #viewer:active { cursor: grabbing; }
-  .hint { padding: 8px 32px 0; color: #555; font-size: 14px; }
-  .key { padding: 16px 32px 32px; columns: 2; max-width: 900px; }
-  .key ol { margin: 0; padding-left: 24px; }
-  .key li { margin-bottom: 6px; }
-  #track-info { padding: 0 32px 16px; font-size: 15px; min-height: 24px; }
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 32px 0; }
+  .hint { color: var(--muted); font-size: 14px; }
+  .toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: #fff; }
+  .toggle button { border: 0; background: transparent; padding: 8px 16px; font-size: 14px; cursor: pointer; color: var(--ink); }
+  .toggle button + button { border-left: 1px solid var(--line); }
+  .toggle button.active { background: var(--accent); color: #fff; }
+  #track-info { padding: 12px 32px 0; font-size: 15px; min-height: 24px; }
   #track-info strong { font-size: 16px; }
-  footer { padding: 0 32px 32px; color: #555; font-size: 14px; }
+  .add-card { margin: 16px 32px 0; padding: 20px 22px; background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  .add-card h2 { margin: 0 0 6px; font-size: 19px; }
+  .add-card p { margin: 0 0 14px; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .add-card .fields { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; }
+  .add-card label { font-size: 13px; color: var(--muted); display: block; }
+  .add-card input { display: block; margin-top: 5px; width: 320px; max-width: 100%; padding: 10px 12px; font-size: 15px; border: 1px solid var(--line); border-radius: 8px; background: #f4f4f1; color: var(--ink); }
+  .add-card input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .add-card button[type="submit"] { padding: 11px 22px; font-size: 15px; font-weight: 600; cursor: pointer; border: 0; border-radius: 8px; background: var(--accent); color: #fff; }
+  .add-card button[type="submit"]:hover { filter: brightness(1.07); }
+  #add-status { font-size: 14px; color: var(--muted); }
+  .key { padding: 20px 32px 32px; columns: 3; column-gap: 32px; }
+  .key ol { margin: 0; padding-left: 24px; }
+  .key li { margin-bottom: 7px; break-inside: avoid; }
+  .key li.is-new { color: var(--accent); font-weight: 600; }
   .links { padding: 0 32px 16px; font-size: 14px; }
-  .links a { color: #111; }
+  .links a { color: var(--ink); }
+  footer { padding: 0 32px 32px; color: var(--muted); font-size: 14px; }
+  @media (max-width: 900px){ .key { columns: 2; } }
+  @media (max-width: 600px){ .key { columns: 1; } header { padding: 20px 20px 0; } .toolbar, #track-info, .links, footer { padding-left: 20px; padding-right: 20px; } .add-card { margin-left: 20px; margin-right: 20px; } }
 </style>
 <script type="importmap">
 {"imports": {"three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"}}
@@ -27,20 +50,35 @@
 </head>
 <body>
 <header>
-  <h1>3Dmusic-map</h1>
+  <div class="brand">
+    <svg viewBox="0 0 100 100" aria-label="Keyframe logo" role="img"><line x1="27" y1="8" x2="27" y2="92" stroke="#1a1a1a" stroke-width="11"/><line x1="32" y1="50" x2="86" y2="10" stroke="#c9a227" stroke-width="11"/><line x1="32" y1="50" x2="86" y2="90" stroke="#c9a227" stroke-width="11"/></svg>
+    <div>
+      <h1>3Dmusic-map</h1>
+      <div class="tagline">by Keyframe</div>
+    </div>
+  </div>
   <p>Every recorded song is one point in a 3D landscape you fly through and listen to. Songs move daily and leave glowing trails. X is chronology (days from July 6, 1974). Y is tempo (BPM, origin 120). Z is popularity, mainstream to underground, era-normalized; Z=0 is about 40,000 streams a year.</p>
   <p>The guess is the unit of the map. Each track is placed in a cascade, one axis at a time: chronology, then tempo, then culture. Every day the map recomputes, and the trails are the record of it learning.</p>
 </header>
 <canvas id="viewer"></canvas>
-<div class="hint">Drag to orbit. Scroll to zoom. Right-drag to pan. Click a numbered point to see the track.</div>
+<div class="toolbar">
+  <div class="toggle" role="group" aria-label="Show tracks">
+    <button type="button" data-filter="all" class="active">All tracks</button>
+    <button type="button" data-filter="original">Original 20</button>
+    <button type="button" data-filter="new">New only</button>
+  </div>
+  <span class="hint">Drag to orbit. Scroll to zoom. Right-drag to pan. Click a numbered point to see the track.</span>
+</div>
 <div id="track-info">Click a point to see its track.</div>
-<form id="add-track" style="padding: 0 32px 16px;">
-  <strong>Add a track to the map</strong><br>
-  <span style="font-size: 14px; color: #555;">Type a track and an artist. It maps right here, instantly, no sign-in. The date comes from MusicBrainz, the BPM from AcousticBrainz when it has it. The reach is a flagged guess for now; the daily update refines it.</span><br><br>
-  <label>Track name<br><input id="track-title" type="text" required style="width: 320px; padding: 6px; font-size: 15px;"></label><br><br>
-  <label>Artist<br><input id="track-artist" type="text" required style="width: 320px; padding: 6px; font-size: 15px;"></label><br><br>
-  <button type="submit" style="padding: 8px 18px; font-size: 15px; cursor: pointer;">Map this track</button>
-  <span id="add-status" style="font-size: 14px; color: #555;"></span>
+<form id="add-track" class="add-card">
+  <h2>Add a track to the map</h2>
+  <p>Type a track and an artist. It maps right here, instantly, no sign-in. The date comes from MusicBrainz, the BPM from AcousticBrainz when it has it. The reach is a flagged guess for now; the daily update refines it.</p>
+  <div class="fields">
+    <label>Track name<input id="track-title" type="text" required></label>
+    <label>Artist<input id="track-artist" type="text" required></label>
+    <button type="submit">Map this track</button>
+    <span id="add-status"></span>
+  </div>
 </form>
 <div class="key">
   <ol id="track-key"></ol>
@@ -60,6 +98,8 @@ const Z_MID_LOG = Math.log10(40000);
 const Z_SCALE = 10;
 const Y_SLOW = [[0,-50],[60,-100/3],[90,-50/3],[120,0]];
 const Y_FAST = [[120,0],[140,10],[175,20],[250,30],[500,40],[1000,50]];
+const ACCENT = 0x00a8cc;
+const INK = 0x1a1a1a;
 function bpmToY(bpm){
   const table = bpm <= 120 ? Y_SLOW : Y_FAST;
   for(let i=0;i<table.length-1;i++){
@@ -159,7 +199,7 @@ scene.add(gridOnPlane(0x2a9d4a, 'y', Y_MIN, X_MIN, X_MAX, Z_MIN, Z_MAX, 10));
 scene.add(line([new THREE.Vector3(X_MIN,0,0), new THREE.Vector3(X_MAX,0,0)], 0x111111, 0.9));
 scene.add(line([new THREE.Vector3(0,Y_MIN,0), new THREE.Vector3(0,Y_MAX,0)], 0x111111, 0.9));
 scene.add(line([new THREE.Vector3(0,0,Z_MIN), new THREE.Vector3(0,0,Z_MAX)], 0x111111, 0.9));
-// Floor edge (the y=0 line of the floor plane is the X axis; the floor's far edge at y=-50)
+// Floor edge
 scene.add(line([new THREE.Vector3(X_MIN,Y_MIN,0), new THREE.Vector3(X_MAX,Y_MIN,0)], 0x111111, 0.5));
 
 // ---------- axis labels ----------
@@ -196,33 +236,59 @@ const points = [];
 const infoEl = document.getElementById('track-info');
 const keyOl = document.getElementById('track-key');
 let nextN = 1;
-function addTrackToScene(t){
+let currentFilter = 'all';
+// Each entry: { group: 'original'|'new', mesh, num, plumb, li }
+const trackEntries = [];
+function addTrackToScene(t, group){
   const li = document.createElement('li');
   li.textContent = t.artist + ', ' + t.title + ' (' + t.date.slice(0,4) + ', ' + t.bpm + ' BPM, ' + t.popularity + ')';
+  if(group === 'new') li.classList.add('is-new');
   keyOl.appendChild(li);
   const pos = trackToVec3(t);
+  const color = group === 'new' ? ACCENT : INK;
   const geo = new THREE.SphereGeometry(1.4, 24, 24);
-  const mat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
+  const mat = new THREE.MeshBasicMaterial({ color });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.position.copy(pos);
   mesh.userData.track = t;
+  mesh.userData.group = group;
   scene.add(mesh);
   points.push(mesh);
-  const num = makeLabel(String(t.n), 30, '#1a1a1a');
+  const num = makeLabel(String(t.n), 30, group === 'new' ? '#00a8cc' : '#1a1a1a');
   num.position.set(pos.x, pos.y + 3.2, pos.z);
   scene.add(num);
-  scene.add(line([pos.clone(), new THREE.Vector3(pos.x, Y_MIN, pos.z)], 0x1a1a1a, 0.25));
+  const plumb = line([pos.clone(), new THREE.Vector3(pos.x, Y_MIN, pos.z)], group === 'new' ? ACCENT : INK, 0.25);
+  scene.add(plumb);
+  trackEntries.push({ group, mesh, num, plumb, li });
+  applyFilter();
   return mesh;
 }
+function applyFilter(){
+  for(const e of trackEntries){
+    const show = currentFilter === 'all' || e.group === currentFilter;
+    e.mesh.visible = show;
+    e.num.visible = show;
+    e.plumb.visible = show;
+    e.li.style.display = show ? '' : 'none';
+  }
+}
+document.querySelectorAll('.toggle button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    applyFilter();
+  });
+});
 fetch('data/snapshot-2026-11-20.json')
   .then(r => r.json())
   .then(d => {
     document.getElementById('snapshot-date').textContent = d.snapshot_date;
-    d.tracks.forEach(t => { addTrackToScene(t); nextN = Math.max(nextN, t.n + 1); });
+    d.tracks.forEach(t => { addTrackToScene(t, 'original'); nextN = Math.max(nextN, t.n + 1); });
     // Visitor-added tracks saved in this browser.
     try {
       const saved = JSON.parse(localStorage.getItem('3dmusic-added') || '[]');
-      saved.forEach(t => { t.n = nextN++; addTrackToScene(t); });
+      saved.forEach(t => { t.n = nextN++; addTrackToScene(t, 'new'); });
     } catch(e) {}
   });
 
@@ -240,7 +306,7 @@ renderer.domElement.addEventListener('pointerup', e => {
   mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
   ray.setFromCamera(mouse, camera);
-  const hit = ray.intersectObjects(points, false);
+  const hit = ray.intersectObjects(points.filter(p => p.visible), false);
   if(hit.length){
     const t = hit[0].object.userData.track;
     infoEl.innerHTML = '<strong>' + t.n + '. ' + t.artist + ' &mdash; ' + t.title + '</strong> &middot; ' + t.date + ' &middot; ' + t.bpm + ' BPM &middot; ' + t.popularity + ' &middot; confidence: ' + t.confidence;
@@ -313,7 +379,7 @@ document.getElementById('add-track').addEventListener('submit', async function(e
   try {
     const t = await browserCascade(artist, title);
     t.n = nextN++;
-    addTrackToScene(t);
+    addTrackToScene(t, 'new');
     // Save in this browser so it stays on your map.
     try {
       const saved = JSON.parse(localStorage.getItem('3dmusic-added') || '[]');
